@@ -8,6 +8,9 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const EmployeeModel = require('./models/Employee')
+const { execSync } = require('child_process');
+
+require('dotenv').config();
 
 const app = express()
 app.use(express.json())
@@ -17,42 +20,51 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // mongoose.connect("mongodb://localhost:27017/")
-mongoose.connect("mongodb+srv://ponnururakshitha:rakshu@cluster0.nqstj.mongodb.net/project");
+mongoose.connect(process.env.MONGODB_URL);
 
 
 app.post('/compile', (req, res) => {
-    try {
+  try {
       const { fileName, fileContent } = req.body;
-  
+
+      // Extract Solidity version from file content
+      const versionMatch = fileContent.match(/pragma solidity (\^?\d+(\.\d+)+);/);
+      const solidityVersion = versionMatch ? versionMatch[1] : '0.8.0'; // Use default version if not specified
+
+      // Use the extracted Solidity version to install the corresponding solc compiler
+      execSync(`npm install solc@${solidityVersion}`, { stdio: 'ignore' });
+
+      const solc = require(`solc@${solidityVersion}`);
+
       const input = {
-        language: 'Solidity',
-        sources: {
-          [fileName]: {
-            content: fileContent,
+          language: 'Solidity',
+          sources: {
+              [fileName]: {
+                  content: fileContent,
+              },
           },
-        },
-        settings: {
-          outputSelection: {
-            '*': {
-              '*': ['*'],
-            },
+          settings: {
+              outputSelection: {
+                  '*': {
+                      '*': ['*'],
+                  },
+              },
           },
-        },
       };
-  
+
       const output = JSON.parse(solc.compile(JSON.stringify(input)));
-  
+
       if (output.errors) {
-        res.status(400).json({ error: 'Compilation error', errors: output.errors });
+          res.status(400).json({ error: 'Compilation error', errors: output.errors });
       } else {
-        const contractName = Object.keys(output.contracts[fileName])[0];
-        const bytecode = output.contracts[fileName][contractName].evm.bytecode.object;
-        res.json({ bytecode });
+          const contractName = Object.keys(output.contracts[fileName])[0];
+          const bytecode = output.contracts[fileName][contractName].evm.bytecode.object;
+          res.json({ bytecode });
       }
-    } catch (error) {
+  } catch (error) {
       console.error('Error during compilation:', error);
       res.status(500).json({ error: 'Internal Server Error' });
-    }
+  }
 });
 
 app.post('/generate-image', async (req, res) => {
