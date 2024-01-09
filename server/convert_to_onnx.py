@@ -1,7 +1,7 @@
 import torch
 import torchvision.transforms as transforms
 
-from server.model import ResNetModel
+from model import ResNetModel
 
 def main():
     pytorch_model = ResNetModel()

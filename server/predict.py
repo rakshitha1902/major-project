@@ -21,18 +21,25 @@ transform = transforms.Compose([
 ])
 
 def predict(image_path):
-    img = Image.open(image_path)
-    x = transform(img)
-    x = x.unsqueeze(0)  # add batch dimension
+    try:
+        img = Image.open(image_path)
+        x = transform(img)
+        x = x.unsqueeze(0)  # add batch dimension
 
-    outputs = ort_sess.run(None, {'input.1': x.numpy()})
-    
-    sorted_predictions = np.argsort(outputs)[0][0][::-1]
-    predictions = [{"category": categories[prediction], "value": float(outputs[0][0][prediction])} for prediction in sorted_predictions]
+        outputs = ort_sess.run(None, {'input.1': x.numpy()})
+        
+        # Assuming outputs is a binary array indicating the presence or absence of each vulnerability
+        predictions = [{"category": categories[i], "value": int(outputs[0][0][i] >= 0.5)} for i in range(len(categories))]
 
-    return json.dumps(predictions)
+        return json.dumps(predictions)
+    except Exception as e:
+        return json.dumps({"error": str(e)})
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python predict.py <image_path>")
+        sys.exit(1)
+
     image_path = sys.argv[1]
     predictions = predict(image_path)
     print(predictions)

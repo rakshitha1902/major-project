@@ -3,6 +3,8 @@ from PIL import Image
 import math
 from io import BytesIO
 import sys
+from hexbytes import HexBytes
+
 
 def get_RGB_image(bytecode):
     image = np.frombuffer(bytecode, dtype=np.uint8)
@@ -19,6 +21,11 @@ def get_RGB_image(bytecode):
     
     return image_bytes_io.getvalue()  # Return the bytes value
 
+def generate_image(bytecode):
+    code = HexBytes(bytecode)
+    image = get_RGB_image(code)
+    return image
+
 if __name__ == "__main__":
     # Read bytecode from file as string
     bytecode_file = sys.argv[1]
@@ -29,7 +36,7 @@ if __name__ == "__main__":
     bytecode = bytecode_str.encode('utf-8')
 
     # Generate RGB image
-    rgb_image_data = get_RGB_image(bytecode)
+    rgb_image_data = generate_image(bytecode)
 
     # Print the binary image data
     sys.stdout.buffer.write(rgb_image_data)

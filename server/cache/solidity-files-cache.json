@@ -1,0 +1,76 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\PROJECT\\model\\server\\contracts\\etherbank.sol": {
+      "lastModificationDate": 1704798868582,
+      "contentHash": "3f22c99384f9a44ccd214a058df6a28d",
+      "sourceName": "contracts/etherbank.sol",
+      "solcConfig": {
+        "version": "0.4.25",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.4.0"
+      ],
+      "artifacts": [
+        "EtherBank"
+      ]
+    },
+    "C:\\PROJECT\\model\\server\\contracts\\KickBNB.sol": {
+      "lastModificationDate": 1704798892934,
+      "contentHash": "969e7132de921a1582a9cf68baa08a0a",
+      "sourceName": "contracts/KickBNB.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Attacker",
+        "KickBNB"
+      ]
+    }
+  }
+}
