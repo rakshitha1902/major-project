@@ -164,7 +164,6 @@ app.post('/login', async (req, res) => {
 
             if (isPasswordValid) {
                 const token = jwt.sign({ email: user.email }, secretKey);
-                console.log(user._id)
                 res.json({ token, userId: user._id });
             } else {
                 res.status(401).json({ error: 'Invalid password' });
@@ -217,8 +216,7 @@ app.post('/create-project/:userId', async (req, res) => {
 
       // Extract the projectId from the saved project
       const projectId = savedProject._id;
-      console.log(projectId);
-  
+
       res.status(201).json({ message: 'Project created successfully', projectId });
     } catch (error) {
       console.error('Error creating project:', error);
@@ -237,7 +235,8 @@ app.get('/user-projects/:userId', async (req, res) => {
       }
   
       const projects = user.projects;
-      res.status(200).json({ projects });
+      const userName = user.name;
+      res.status(200).json({ projects, userName });
     } catch (error) {
       console.error('Error fetching user projects:', error);
       res.status(500).json({ error: 'Internal server error' });

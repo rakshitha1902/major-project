@@ -1,9 +1,13 @@
 import React, { useEffect, useState} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import ProjectCard from './ProjectCard'; // Import the ProjectCard component
+import { Card, Button } from 'react-bootstrap'; // Import CardDeck component for layout
+
 
 function Dashboard() {
   const [projects, setProjects] = useState([]);
+  const [userName, setUserName] = useState('');
   const navigate = useNavigate();
   const { userId } = useParams();
 
@@ -12,7 +16,9 @@ function Dashboard() {
     axios.get(`http://localhost:3001/user-projects/${userId}`)
       .then(response => {
         const userProjects = response.data.projects || [];
+        const username = response.data.userName;
         setProjects(userProjects);
+        setUserName(username);
       })
       .catch(error => console.error('Error fetching projects:', error));
   }, [userId]);
@@ -62,22 +68,39 @@ function Dashboard() {
   };
 
   return (
-    <div>
-      <h2>Welcome to the Dashboard</h2>
-      <button onClick={handleNewProjectClick}>Create a New Project</button>
-
-      <h3>Your Projects:</h3>
-      <div>
-        {projects.map((project, index) => (
-          <div key={index}>
-            <h4>{project.fileName}</h4>
-            <p>Last Updated: {new Date(project.updatedAt).toLocaleString()}</p>
-            <button onClick={() => handleOpenProjectClick(project._id)}>Open Project</button>
-          </div>
-        ))}
+    <div style={styles.dashboard}>
+      <div className=' m-3 mb-5 d-flex justify-content-between'>
+        <h2>DASHBOARD</h2>
+        <h4 >{userName}</h4>
       </div>
+      <Card className='m-3 mt-5'><Button variant="secondary" onClick={handleNewProjectClick}><h5>Create a New Project</h5></Button></Card>
+
+      <h4 className='m-3 mt-5'>YOUR PROJECTS:</h4>
+      <Card className='border-0'>
+        {projects.map((project, index) => (
+          <ProjectCard
+            key={index}
+            project={project}
+            userId={userId}
+            onOpenProjectClick={handleOpenProjectClick}
+            style={styles.projectCard}
+          />
+        ))}
+      </Card>
     </div>
   );
 }
 
 export default Dashboard;
+
+const styles = {
+  dashboard: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '20px',
+  },
+  projectCard: {
+    width: '100%',
+    marginBottom: '20px',
+  },
+ };
