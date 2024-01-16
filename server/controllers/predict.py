@@ -4,8 +4,10 @@ import onnxruntime as ort
 import torchvision.transforms as transforms
 from PIL import Image
 import numpy as np
+import os
 
-model_path = "onnx_model.onnx"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(script_dir, "onnx_model.onnx")
 ort_sess = ort.InferenceSession(model_path)
 
 categories = ['access-control', 'arithmetic', 'other', 'reentrancy', 'unchecked-calls']

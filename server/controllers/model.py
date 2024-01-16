@@ -1,7 +1,7 @@
 from torch import nn
 from torchvision import models
 
-from registry import REGISTRY
+from server.controllers.registry import REGISTRY
 
 
 @REGISTRY.register('resnet')
